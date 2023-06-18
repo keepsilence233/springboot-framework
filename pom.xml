@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>springboot-bean-lifecycle</module>
+        <module>springboot-transaction</module>
     </modules>
 
     <properties>

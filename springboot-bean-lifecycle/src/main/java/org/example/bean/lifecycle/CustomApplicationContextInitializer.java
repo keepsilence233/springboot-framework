@@ -17,6 +17,6 @@ public class CustomApplicationContextInitializer implements ApplicationContextIn
      */
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
-        System.out.println("ApplicationContextInitializer");
+        System.out.println("初始化上下文 [CustomApplicationContextInitializer] initialize");
     }
 }

@@ -1,45 +1,54 @@
 package org.example.bean.lifecycle;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanNameAware;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 
 /**
  * springBoot bean lifecycle
  * <p>
- * ApplicationContextInitializer
+ * 初始化上下文 [CustomApplicationContextInitializer] initialize
  * </p>
  * <p>
- * BeanNameAware
- * ApplicationContextAware
+ * [CustomBeanFactoryPostProcessor] 构造器
+ * 执行 [CustomBeanFactoryPostProcessor#postProcessBeanFactory] 方法
+ * [CustomBeanPostProcessor] 构造器
+ * [CustomInstantiationAwareBeanPostProcessor] 构造器
  * </p>
  * <p>
- * 调用Bean的函数(constructor)
- * 调用postProcessBeforeInitialization...
- * 调用Bean的函数(postConstruct)
- * 调用Bean的函数(afterPropertiesSet)
- * 调用Bean的函数(initMethod)
- * 调用postProcessAfterInitialization...
+ * Bean 实例化之前 [CustomInstantiationAwareBeanPostProcessor] before instantiation user
  * </p>
  * <p>
- * ApplicationRunner
- * CommandLineRunner
+ * [user bean] 构造函数
+ * [CustomInstantiationAwareBeanPostProcessor] postProcessPropertyValues方法 修改Bean属性值
+ * [user bean 属性注入] mobile:110
  * </p>
  * <p>
- * 调用Bean的函数(preDestroy)
- * 调用Bean的函数(destroy)
- * 调用Bean的函数(destroyMethod)
+ * 接口BeanNameAware#setBeanName
+ * 接口ApplicationContextAware#setApplicationContext
+ * </p>
+ * <p>
+ * Bean 初始化前 [CustomBeanPostProcessor] before initialization user
+ * [user bean] @PostConstruct
+ * 接口InitializingBean#afterPropertiesSet
+ * [init-method]调用<bean>的init-method属性指定的初始化方法
+ * Bean 初始化后 [CustomBeanPostProcessor] after initialization user
+ * </p>
+ * <p>
+ * Bean 实例化之后[CustomInstantiationAwareBeanPostProcessor] after initialization user
+ * </p>
+ * <p>
+ * 接口ApplicationRunner#run
+ * 接口CommandLineRunner#run
+ * </p>
+ * <p>
+ * [user bean] @PreDestroy
+ * 接口DisposableBean#destroy
+ * [destroy-method]调用<bean>destroy-method属性指定的销毁方法
  * </p>
  */
 @SpringBootApplication
-public class Application implements ApplicationRunner, CommandLineRunner, BeanNameAware, ApplicationContextAware {
+public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
 //        SpringApplication application = new SpringApplication(Application.class);
@@ -51,25 +60,5 @@ public class Application implements ApplicationRunner, CommandLineRunner, BeanNa
     @Bean(initMethod = "initMethod", destroyMethod = "destroyMethod")
     public User user() {
         return new User("张三");
-    }
-
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        System.out.println("ApplicationRunner +" + args);
-    }
-
-    @Override
-    public void run(String... args) throws Exception {
-        System.out.println("CommandLineRunner +" + args);
-    }
-
-    @Override
-    public void setBeanName(String name) {
-        System.out.println("BeanNameAware");
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        System.out.println("ApplicationContextAware");
     }
 }
